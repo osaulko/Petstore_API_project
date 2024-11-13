@@ -1,11 +1,11 @@
 package utils;
 
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
-import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import lombok.Builder;
 import models.Pet;
-
+import java.util.ArrayList;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static config.PropertyReader.properties;
@@ -16,7 +16,14 @@ public class PetHelper {
     @NotNull
     public static String PET = URL + "/pet",
             FIND_BY_STATUS = PET + "/findByStatus";
-
+    @Builder
+    public static Pet getPet(Integer id, String name, ArrayList<String> photoUrls) {
+        return Pet.builder()
+                .id(id)
+                .name(name)
+                .photoUrls(photoUrls)
+                .build();
+    }
     public static ValidatableResponse postPetResponse(Pet pet) {
         return
                 given()
@@ -24,7 +31,7 @@ public class PetHelper {
                         .when()
                         .post(PET)
                         .then()
-                        .log().ifValidationFails(LogDetail.ALL);
+                        .log().all();
     }
 
     public static ValidatableResponse putPetResponse(Pet pet) {
@@ -45,7 +52,7 @@ public class PetHelper {
                         .when()
                         .post(PET + "/" + id.toString() + "/" + "uploadImage")
                         .then()
-                        .log().ifValidationFails(LogDetail.ALL);
+                        .log().all();
     }
 
     public static ValidatableResponse getPetTest(String id) {
@@ -55,7 +62,7 @@ public class PetHelper {
                         .when()
                         .get(PET + "/" + id)
                         .then()
-                        .log().ifValidationFails(LogDetail.ALL);
+                        .log().all();
     }
 
     public static ValidatableResponse getFindByStatus (String status) {
@@ -77,7 +84,7 @@ public class PetHelper {
                         .when()
                         .post(PET + "/" + id.toString())
                         .then()
-                        .log().ifValidationFails(LogDetail.ALL);
+                        .log().all();
     }
 
     public static ValidatableResponse deletePetTest (Integer id) {
@@ -85,7 +92,6 @@ public class PetHelper {
                 when()
                         .delete(PET + "/" + id.toString())
                         .then()
-                        .log().ifValidationFails(LogDetail.ALL);
+                        .log().all();
     }
-
 }
